@@ -10,12 +10,16 @@ private:
     std::mt19937 random_direction_generator;
     std::uniform_int_distribution<int> unif_distr;
 	void setup_pixel_array(sf::Color background_color = sf::Color::Black);
-
 public:
 	size_t width, height;
 	std::vector<PixelEntity*> entities;
 	std::vector<PixelEntity*> entity_grid;
 	bool is_full;
+
+	// This flag sets the movement to be on a toroid. This means that when a
+	// PixelEntity walks across a border, it ends up on the "opposite" side 
+	// of the plane instead of being blocked;
+	bool toroid_grid;
 	size_t available_pixels;
 	sf::Uint8* pixel_array;
 
@@ -25,7 +29,9 @@ public:
 
 	void do_step();
 	PixelEntity* at(sf::Vector2<int> pos);
+	PixelEntity* at_unsafe(sf::Vector2<int> pos);
 	void move_entity(PixelEntity* pixel_to_move, sf::Vector2<int> to);
+	bool grid_pos_available(sf::Vector2<int> pos);
 	int get_random_direction();
 	bool add_entity(PixelEntity* ent);
 	void destroy(PixelEntity* ent);
@@ -34,11 +40,4 @@ public:
 };
 
 
-// This is a duplicate of the EntityFrame, except for the fact that movement is on
-// a toroid. This means that when an PixelEntity walks across a border, it ends up on the 
-// "opposite" side of the plane. 
-class ToroidEntityFrame : public EntityFrame {
-	using EntityFrame::EntityFrame;
-public:
-	void move_entity(PixelEntity* pixel_to_move, sf::Vector2<int> to);
-};
+

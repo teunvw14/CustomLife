@@ -20,6 +20,7 @@ public:
 	void add_to_frame(EntityFrame* frame);
 
 	// Methods related to pixel movement
+	void move_to(sf::Vector2<int> pos);
 	void move_up();
 	void move_right();
 	void move_left();
@@ -30,8 +31,8 @@ public:
 	//float distance_eucl_to_pixel(PixelEntity pixel);
 	//float distance_manh_to_pixel(PixelEntity pixel);
 	
-	bool pixel_up_free();
-	bool pixel_right_free();
-	bool pixel_down_free();
-	bool pixel_left_free();
+	//bool pixel_up_free();
+	//bool pixel_right_free();
+	//bool pixel_down_free();
+	//bool pixel_left_free();
 };

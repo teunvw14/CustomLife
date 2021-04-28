@@ -40,88 +40,36 @@ void Predator::do_step() {
 		switch (direction) {
 		case 0:
 			new_pos.y--;
-			// check if there's prey at the new location,
-			// eat it if so
-			thing_at_new_pos = this->frame->at(new_pos);
-			if (thing_at_new_pos) {
-				if (thing_at_new_pos->type_id == 3) {
-					this->frame->destroy(thing_at_new_pos);
-					this->energy += (int)(EATING_ENERGY_FACTOR * (float)starting_energy);
-					// after eating the prey, if the energy of the predator
-					// is high enough, a new predator will spawn in place
-					// of the prey
-					if (this->energy >= REPRODUCTIVE_ENERGY && this->pixel_up_free()) {
-						this->energy /= 2;
-						int baby_starting_energy = (int)(CHILDREN_ENERGY_FACTOR * (float)this->starting_energy);
-						p = new Predator(new_pos, this->color, baby_starting_energy);
-						p->add_to_frame(this->frame);
-					}
-				}
-			}
-			else {
-				this->move_up();
-			}
 			break;
 		case 1:
 			new_pos.x++;
-			thing_at_new_pos = this->frame->at(new_pos);
-			if (thing_at_new_pos) {
-				if (thing_at_new_pos->type_id == 3) {
-					this->frame->destroy(thing_at_new_pos);
-					this->energy += (int)(EATING_ENERGY_FACTOR * (float)starting_energy);
-					if (this->energy >= REPRODUCTIVE_ENERGY && this->pixel_right_free()) {
-						this->energy /= 2;
-						int baby_starting_energy = (int)(CHILDREN_ENERGY_FACTOR * (float)this->starting_energy);
-						p = new Predator(new_pos, this->color, baby_starting_energy);
-						p->add_to_frame(this->frame);
-						this->energy = this->energy / 2;
-					}
-				}
-			}
-			else {
-				this->move_right();
-			}
 			break;
 		case 2:
 			new_pos.x--;
-			thing_at_new_pos = this->frame->at(new_pos);
-			if (thing_at_new_pos) {
-				if (thing_at_new_pos->type_id == 3) {
-					this->frame->destroy(thing_at_new_pos);
-					this->energy += (int)(EATING_ENERGY_FACTOR * (float)starting_energy);
-					if (this->energy >= REPRODUCTIVE_ENERGY && this->pixel_left_free()) {
-						this->energy /= 2;
-						int baby_starting_energy = (int)(CHILDREN_ENERGY_FACTOR * (float)this->starting_energy);
-						p = new Predator(new_pos, this->color, baby_starting_energy);
-						p->add_to_frame(this->frame);
-						this->energy = this->energy / 2;
-					}
-				}
-			}
-			else {
-				this->move_left();
-			}
 			break;
 		case 3:
 			new_pos.y++;
-			thing_at_new_pos = this->frame->at(new_pos);
-			if (thing_at_new_pos) {
-				if (thing_at_new_pos->type_id == 3) {
-					this->eat(thing_at_new_pos);
-					this->energy += (int)(EATING_ENERGY_FACTOR * (float)starting_energy);
-					if (this->energy >= REPRODUCTIVE_ENERGY && this->pixel_down_free()) {
-						this->energy /= 2;
-						int baby_starting_energy = (int)(CHILDREN_ENERGY_FACTOR * (float)this->starting_energy);
-						p = new Predator(new_pos, this->color, baby_starting_energy);
-						p->add_to_frame(this->frame);
-						this->energy = this->energy / 2;
-					}
+			break;
+		}
+		// check if there's prey at the new location, eat it if so
+		thing_at_new_pos = this->frame->at(new_pos);
+		if (thing_at_new_pos) {
+			if (thing_at_new_pos->type_id == 3) {
+				this->frame->destroy(thing_at_new_pos);
+				this->energy += (int)(EATING_ENERGY_FACTOR * (float)starting_energy);
+				// after eating the prey, if the energy of the predator
+				// is high enough, a new predator will spawn in place
+				// of the prey
+				if (this->energy >= REPRODUCTIVE_ENERGY && this->frame->grid_pos_available(new_pos)) {
+					this->energy = (int) (this->energy * (1 - CHILDREN_ENERGY_FACTOR));
+					int baby_starting_energy = (int) (CHILDREN_ENERGY_FACTOR * (float)this->starting_energy);
+					p = new Predator(new_pos, this->color, baby_starting_energy);
+					p->add_to_frame(this->frame);
 				}
 			}
-			else {
-				this->move_down();
-			}
-			break;
+		}
+		else {
+			this->move_to(new_pos);
 		}
 		this->energy--;
 	}
@@ -163,31 +111,19 @@ void Prey::do_step() {
 		bool room_for_breeding = false;
 		switch (direction) {
 		case 0:
-			if (this->pixel_up_free()) {
-				new_prey_pos.y--;
-				room_for_breeding = true;
-			}
+			new_prey_pos.y--;
 			break;
 		case 1:
-			if (this->pixel_right_free()) {
-				new_prey_pos.x++;
-				room_for_breeding = true;
-			}
+			new_prey_pos.x++;
 			break;
 		case 2:
-			if (this->pixel_left_free()) {
-				new_prey_pos.x--;
-				room_for_breeding = true;
-			}
+			new_prey_pos.x--;
 			break;
 		case 3:
-			if (this->pixel_down_free()) {
-				new_prey_pos.y++;
-				room_for_breeding = true;
-			}
+			new_prey_pos.y++;
 			break;
 		}
-		if (room_for_breeding) {
+		if (this->frame->grid_pos_available(new_prey_pos)) {
 			p = new Prey(new_prey_pos, this->color, baby_breed_time);
 			p->add_to_frame(this->frame);
 			this->steps_until_next_breeding = this->breed_time;

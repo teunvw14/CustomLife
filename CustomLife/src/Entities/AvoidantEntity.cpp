@@ -40,11 +40,9 @@ void AvoidantEntity::do_step() {
 
 	if (!(up_bias == right_bias && right_bias == down_bias && down_bias == left_bias)) {
 		if (up_bias >= right_bias && up_bias >= down_bias && up_bias >= left_bias) {
-			//move up
 			this->move_up();
 		}
 		else if (right_bias >= up_bias && right_bias >= down_bias && right_bias >= left_bias) {
-			// move right
 			this->move_right();
 		}
 		else if (down_bias >= up_bias && down_bias >= right_bias && down_bias >= left_bias) {

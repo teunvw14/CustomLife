@@ -42,38 +42,38 @@ void set_window_title(sf::RenderWindow &window, EntityFrame &frame) {
 
 int main()
 {
-    size_t width = 256;
-    size_t height = 256;
+    size_t width = 512;
+    size_t height = 512;
     size_t total_pixels = width * height;
 
     sf::Uint8* pixel_array;
 
-    ToroidEntityFrame frame(width, height);
+    EntityFrame frame(width, height);
+    frame.toroid_grid = true;
     //frame.available_pixels = 256*16;
     sf::Vector2<int> pos;
 
 
-    // Initialize a bunch of entities
-    //int num_prey = 256;
-    //int num_predator = 256;
-    //for (int i = 0; i < num_prey; i++) {
-    //    pos = sf::Vector2<int>(rand() % width, rand() % height);
-    //    Prey* p =  new Prey(pos, sf::Color::Yellow);
-    //    p->add_to_frame(&frame);
-    //}
-    //for (int i = 0; i < num_predator; i++) {
-    //    pos = sf::Vector2<int>(rand() % width, rand() % height);
-    //    Predator* p = new Predator(pos);
-    //    p->add_to_frame(&frame);
-    //}
-
-
-    int num_pixels = 256;
-    for (int i = 0; i < num_pixels; i++) {
+     //Initialize a bunch of entities
+    int num_prey = 256;
+    int num_predator = 256;
+    for (int i = 0; i < num_prey; i++) {
         pos = sf::Vector2<int>(rand() % width, rand() % height);
-        RandomWalkEntity* p = new RandomWalkEntity(pos, sf::Color::White);
+        Prey* p =  new Prey(pos, sf::Color::Green);
         p->add_to_frame(&frame);
     }
+    for (int i = 0; i < num_predator; i++) {
+        pos = sf::Vector2<int>(rand() % width, rand() % height);
+        Predator* p = new Predator(pos);
+        p->add_to_frame(&frame);
+    }
+
+    /*int num_ent = 2048;
+    for (int i = 0; i < num_ent; i++) {
+        pos = sf::Vector2<int>(rand() % width, rand() % height);
+        AvoidantEntity* p = new AvoidantEntity(pos, sf::Color::White);
+        p->add_to_frame(&frame);
+    }*/
 
     sf::Image pixel_image;
 
@@ -81,7 +81,7 @@ int main()
     sf::Sprite pixel_sprite;
 
     sf::RenderWindow window(sf::VideoMode(width, height), "SFML works!");
-    window.setFramerateLimit(60);
+    //window.setFramerateLimit(60);
 
     while (window.isOpen())
     {
