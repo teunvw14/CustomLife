@@ -150,6 +150,7 @@
     <ClCompile Include="src\Entities\RandomAvoidantEntity.cpp" />
     <ClCompile Include="src\Entities\AvoidantEntity.cpp" />
     <ClCompile Include="src\Entities\RandomWalkEntity.cpp" />
+    <ClCompile Include="src\Entities\SmartPredatorPrey.cpp" />
     <ClCompile Include="src\EntityFrame.cpp" />
     <ClCompile Include="src\PixelEntity.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="src\Entities\RandomAvoidantEntity.h" />
     <ClInclude Include="src\Entities\AvoidantEntity.h" />
     <ClInclude Include="src\Entities\RandomWalkEntity.h" />
+    <ClInclude Include="src\Entities\SmartPredatorPrey.h" />
     <ClInclude Include="src\EntityFrame.h" />
     <ClInclude Include="src\PixelEntity.h" />
     <ClInclude Include="src\util\directions.h" />

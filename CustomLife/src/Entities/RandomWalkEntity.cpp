@@ -2,7 +2,6 @@
 #include "../EntityFrame.h"
 
 void RandomWalkEntity::do_step() {
-	// TODO: make random numbers _actually_ random. The rand() function is horrible. 
 	int direction = this->frame->get_random_direction();
 	switch (direction) {
 	case 0:

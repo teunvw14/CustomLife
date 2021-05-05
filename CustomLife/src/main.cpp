@@ -9,6 +9,7 @@
 #include "Entities/RandomAvoidantEntity.h"
 #include "Entities/RandomWalkEntity.h"
 #include "Entities/PredatorPrey.h"
+#include "Entities/SmartPredatorPrey.h"
 
 
 // Check for overlapping entities
@@ -53,20 +54,34 @@ int main()
     //frame.available_pixels = 256*16;
     sf::Vector2<int> pos;
 
+    //AvoidantEntity* p1 = new AvoidantEntity(sf::Vector2<int>(0,100), sf::Color::White);
+    //p1->add_to_frame(&frame);
+    //AvoidantEntity* p2 = new AvoidantEntity(sf::Vector2<int>(511, 100), sf::Color::White);
+    //p2->add_to_frame(&frame);
+
+    /*p1->update_neighbours();
+    for (auto ent : p1->neighbours) {
+        std::cout << "Found neighbour at: (" << ent->pos.x << "," << ent->pos.y << ") \n";
+    }*/
+
+    // single prey:
+    pos = sf::Vector2<int>(0, 0);
+    Prey* p = new SmartPrey(pos, sf::Color::Green);
+    p->add_to_frame(&frame);
 
      //Initialize a bunch of entities
     int num_prey = 256;
     int num_predator = 256;
-    for (int i = 0; i < num_prey; i++) {
+    /*for (int i = 0; i < num_prey; i++) {
         pos = sf::Vector2<int>(rand() % width, rand() % height);
-        Prey* p =  new Prey(pos, sf::Color::Green);
+        Prey* p = new Prey(pos, sf::Color::Green);
         p->add_to_frame(&frame);
     }
     for (int i = 0; i < num_predator; i++) {
         pos = sf::Vector2<int>(rand() % width, rand() % height);
         Predator* p = new Predator(pos);
         p->add_to_frame(&frame);
-    }
+    }*/
 
     /*int num_ent = 2048;
     for (int i = 0; i < num_ent; i++) {
@@ -80,8 +95,8 @@ int main()
     sf::Texture pixel_texture;
     sf::Sprite pixel_sprite;
 
-    sf::RenderWindow window(sf::VideoMode(width, height), "SFML works!");
-    //window.setFramerateLimit(60);
+    sf::RenderWindow window(sf::VideoMode(width, height), "");
+    //window.setFramerateLimit(120);
 
     while (window.isOpen())
     {
@@ -91,7 +106,7 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        
+
         frame.do_step();
         //check_overlap(&frame);
         pixel_array = frame.pixel_array;

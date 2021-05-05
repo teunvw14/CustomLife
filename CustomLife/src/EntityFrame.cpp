@@ -36,24 +36,27 @@ void EntityFrame::setup_pixel_array(sf::Color background_color) {
 			pixel_array[4 * (index)+3] = background_color.a;
 		}
 	}
-
 }
 
 void EntityFrame::do_step() {
 	for (int i = 0; i < this->entities.size(); i++) {
-		//std::cout << "Doin step for entity no. " << i << std::endl;
 		this->entities[i]->do_step();
 	}
 }
 
-
 bool EntityFrame::add_entity(PixelEntity* ent) {
 	if (this->is_full) {
+		std::cout << "Grid full!" << std::endl;
 		return false;
 	}
 	else {
+		sf::Vector2<int> adjusted_pos = ent->pos;
+		if (this->toroid_grid) {
+			adjusted_pos = this->pos_toroid_adjust(adjusted_pos);
+		}
+		ent->pos = adjusted_pos;
+		int position_in_grid = adjusted_pos.y * width + adjusted_pos.x;
 		this->entities.push_back(ent);
-		int position_in_grid = ent->pos.y* width + ent->pos.x;
 		this->entity_grid[position_in_grid] = ent;
 		this->set_pixel(position_in_grid, ent->color);
 
@@ -66,7 +69,6 @@ bool EntityFrame::add_entity(PixelEntity* ent) {
 }
 
 void EntityFrame::destroy(PixelEntity* ent) {
-	//std::cout << "Destroying pixel at " << ent << std::endl;
 	this->entity_grid[ent->pos.y * this->width + ent->pos.x] = nullptr;
 	this->set_pixel(ent->pos, sf::Color::Black);
 	auto index = std::find(this->entities.begin(), this->entities.end(), ent);
@@ -86,17 +88,20 @@ void EntityFrame::set_pixel(int position_in_grid, sf::Color color) {
 void EntityFrame::set_pixel(sf::Vector2<int> vec_pos, sf::Color color) {
 	int position_in_grid = vec_pos.y * width + vec_pos.x;
 	this->set_pixel(position_in_grid, color);
+}
 
+sf::Vector2<int> EntityFrame::pos_toroid_adjust(sf::Vector2<int> pos) {
+	sf::Vector2<int> adjusted_pos = pos;
+	adjusted_pos.x = adjusted_pos.x % this->width;
+	adjusted_pos.y = adjusted_pos.y % this->height;
+	return adjusted_pos;
 }
 
 PixelEntity* EntityFrame::at(sf::Vector2<int> pos) {
 	if (this->toroid_grid) {
-		sf::Vector2<int> adjusted_to = pos;
-		adjusted_to.x = adjusted_to.x % this->width;
-		adjusted_to.y = adjusted_to.y % this->height;
-		return at_unsafe(adjusted_to);
+		return at_unsafe(this->pos_toroid_adjust(pos));
 	}
-	else if (pos.x < this->width && pos.x >= 0 && pos.y < this->height && pos.y >= 0) {
+	else if (this->pos_within_bounds(pos))  {
 		return this->entity_grid[pos.y * this->width + pos.x];
 	}
 	return nullptr;
@@ -112,9 +117,23 @@ int EntityFrame::get_random_direction() {
 	return this->unif_distr(this->random_direction_generator);
 }
 
-bool EntityFrame::grid_pos_available(sf::Vector2<int> pos) {
-	if (bool new_pos_within_bounds = pos.x >= 0 && pos.y >= 0 && pos.x < this->width && pos.y < this->height) {
-		if (bool new_pos_available = this->at_unsafe(pos) == nullptr) {
+bool EntityFrame::pos_within_bounds(sf::Vector2<int> pos) {
+	return (pos.x >= 0 && pos.y >= 0 && pos.x < this->width && pos.y < this->height);
+}
+
+// There's no "safe version" of this method. If you want to be sure that
+// the `pos` argument is legal, use the grid_pos_safe method, that's basically 
+// the "safe version" of this method.
+bool EntityFrame::pos_free_unsafe(sf::Vector2<int> pos) {
+	return (this->at_unsafe(pos) == nullptr);
+}
+
+bool EntityFrame::grid_pos_safe(sf::Vector2<int> pos) {
+	if (this->toroid_grid) {
+		return true;
+	}
+	if (this->pos_within_bounds(pos)) {
+		if (this->pos_free_unsafe(pos)) {
 			return true;
 		}
 	}
@@ -124,8 +143,7 @@ bool EntityFrame::grid_pos_available(sf::Vector2<int> pos) {
 void EntityFrame::move_entity(PixelEntity* pixel_to_move, sf::Vector2<int> to) {
 	sf::Vector2<int> adjusted_to = to;
 	if (this->toroid_grid) {
-		adjusted_to.x = adjusted_to.x % this->width;
-		adjusted_to.y = adjusted_to.y % this->height;
+		adjusted_to = this->pos_toroid_adjust(to);
 	}
 	// check direction possible:
 	if (bool new_pos_available = this->at_unsafe(adjusted_to) == nullptr) {
@@ -137,4 +155,3 @@ void EntityFrame::move_entity(PixelEntity* pixel_to_move, sf::Vector2<int> to) {
 		this->set_pixel(adjusted_to, pixel_to_move->color);
 	}
 }
-

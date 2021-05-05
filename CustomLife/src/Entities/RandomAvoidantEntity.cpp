@@ -35,7 +35,6 @@ void RandomAvoidantEntity::do_step() {
 		}
 	}
 
-	// TODO: make random numbers _actually_ random. The rand() function is horrible. 
 	int direction = this->frame->get_random_direction();
 
 	if (!(up_bias == right_bias && right_bias == down_bias && down_bias == left_bias)) {

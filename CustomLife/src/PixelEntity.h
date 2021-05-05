@@ -20,6 +20,7 @@ public:
 	void add_to_frame(EntityFrame* frame);
 
 	// Methods related to pixel movement
+	void move_to_unsafe(sf::Vector2<int> pos);
 	void move_to(sf::Vector2<int> pos);
 	void move_up();
 	void move_right();

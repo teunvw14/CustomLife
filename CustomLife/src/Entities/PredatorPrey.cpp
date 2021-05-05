@@ -27,16 +27,11 @@ Predator::Predator(sf::Vector2<int> pos, sf::Color color) : Predator(pos, color,
 Predator::Predator(sf::Vector2<int> pos) : Predator(pos, sf::Color::Red) {}
 
 void Predator::do_step() {
-	//std::cout << "Predator energy is: " << this->energy << std::endl;
-	if (this->energy <= 0) { // dead
-		this->die();
-	}
-	else {
+	if (!this->die_if_no_energy()) {
 		// move randomly if possible
 		int direction = this->frame->get_random_direction();
 		sf::Vector2<int> new_pos = this->pos;
 		PixelEntity* thing_at_new_pos;
-		Predator* p;
 		switch (direction) {
 		case 0:
 			new_pos.y--;
@@ -56,14 +51,14 @@ void Predator::do_step() {
 		if (thing_at_new_pos) {
 			if (thing_at_new_pos->type_id == 3) {
 				this->frame->destroy(thing_at_new_pos);
-				this->energy += (int)(EATING_ENERGY_FACTOR * (float)starting_energy);
+				this->energy += (int)(EATING_ENERGY_FACTOR * (float)this->starting_energy);
 				// after eating the prey, if the energy of the predator
 				// is high enough, a new predator will spawn in place
 				// of the prey
-				if (this->energy >= REPRODUCTIVE_ENERGY && this->frame->grid_pos_available(new_pos)) {
+				if (this->energy >= REPRODUCTIVE_ENERGY && this->frame->grid_pos_safe(new_pos)) {
 					this->energy = (int) (this->energy * (1 - CHILDREN_ENERGY_FACTOR));
 					int baby_starting_energy = (int) (CHILDREN_ENERGY_FACTOR * (float)this->starting_energy);
-					p = new Predator(new_pos, this->color, baby_starting_energy);
+					Predator* p = new Predator(new_pos, this->color, baby_starting_energy);
 					p->add_to_frame(this->frame);
 				}
 			}
@@ -75,8 +70,12 @@ void Predator::do_step() {
 	}
 }
 
-void Predator::die() {
-	this->frame->destroy(this);
+bool Predator::die_if_no_energy() {
+	if (this->energy <= 0) {
+		this->frame->destroy(this);
+		return true;
+	}
+	return false;
 }
 
 void Predator::eat(PixelEntity* prey) {
@@ -104,51 +103,46 @@ Prey::Prey(sf::Vector2<int> pos, sf::Color color) : Prey(pos, color, DEFAULT_TIM
 
 void Prey::do_step() {
 	int direction = this->frame->get_random_direction();
+	sf::Vector2<int> new_pos = this->pos;
+	switch (direction) {
+	case 0:
+		new_pos.y--;
+		break;
+	case 1:
+		new_pos.x++;
+		break;
+	case 2:
+		new_pos.x--;
+		break;
+	case 3:
+		new_pos.y++;
+		break;
+	}
 	if (this->steps_until_next_breeding <= 0) {
-		int baby_breed_time = (int)(0.25 * DEFAULT_TIME_BETWEEN_BREEDS) + 1 * this->breed_time - (rand() % (int)(0.5 * this->breed_time));
-		sf::Vector2<int> new_prey_pos = this->pos;
-		Prey* p;
-		bool room_for_breeding = false;
-		switch (direction) {
-		case 0:
-			new_prey_pos.y--;
-			break;
-		case 1:
-			new_prey_pos.x++;
-			break;
-		case 2:
-			new_prey_pos.x--;
-			break;
-		case 3:
-			new_prey_pos.y++;
-			break;
-		}
-		if (this->frame->grid_pos_available(new_prey_pos)) {
-			p = new Prey(new_prey_pos, this->color, baby_breed_time);
-			p->add_to_frame(this->frame);
-			this->steps_until_next_breeding = this->breed_time;
-		}
+		this->breed_to(new_pos);
 	}
 	else {
-		// move randomly if possible
-		switch (direction) {
-		case 0:
-			this->move_up();
-			break;
-		case 1:
-			this->move_right();
-			break;
-		case 2:
-			this->move_left();
-			break;
-		case 3:
-			this->move_down();
-			break;
-		}
+		this->move_to(new_pos);
 		this->steps_until_next_breeding--;
 	}
 }
 
 void Prey::die() {
 	this->frame->destroy(this);
+}
+
+void Prey::breed_to_unsafe(sf::Vector2<int> new_prey_pos) {
+	Prey* p = new Prey(new_prey_pos, this->color, this->get_baby_breed_time());
+	p->add_to_frame(this->frame);
+	this->steps_until_next_breeding = this->breed_time;
+}
+
+void Prey::breed_to(sf::Vector2<int> new_prey_pos) {
+	if (this->frame->grid_pos_safe(new_prey_pos)) {
+		this->breed_to_unsafe(new_prey_pos);
+	}
+}
+
+int Prey::get_baby_breed_time() {
+	return (int)(0.25 * DEFAULT_TIME_BETWEEN_BREEDS) + this->breed_time - (rand() % (int)(0.5 * this->breed_time));
 }

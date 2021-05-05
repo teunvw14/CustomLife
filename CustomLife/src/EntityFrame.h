@@ -31,7 +31,10 @@ public:
 	PixelEntity* at(sf::Vector2<int> pos);
 	PixelEntity* at_unsafe(sf::Vector2<int> pos);
 	void move_entity(PixelEntity* pixel_to_move, sf::Vector2<int> to);
-	bool grid_pos_available(sf::Vector2<int> pos);
+	bool grid_pos_safe(sf::Vector2<int> pos);
+	bool pos_within_bounds(sf::Vector2<int> pos);
+	bool pos_free_unsafe(sf::Vector2<int> pos);
+	sf::Vector2<int> pos_toroid_adjust(sf::Vector2<int> pos);
 	int get_random_direction();
 	bool add_entity(PixelEntity* ent);
 	void destroy(PixelEntity* ent);

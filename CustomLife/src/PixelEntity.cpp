@@ -9,7 +9,7 @@ PixelEntity::PixelEntity(sf::Vector2<int> pos, sf::Color color) {
 	this->pos.y = pos.y;
 	this->color = color; 
 	this->frame = nullptr;
-	this->neighbour_radius = 4;
+	this->neighbour_radius = 1;
 	this->type_id = -1;
 }
 
@@ -55,8 +55,14 @@ void PixelEntity::add_to_frame(EntityFrame* frame) {
 //	return (new_pos_within_bounds && new_pos_available);
 //}
 
-void PixelEntity::move_to(sf::Vector2<int> pos) {
+void PixelEntity::move_to_unsafe(sf::Vector2<int> pos) {
 	this->frame->move_entity(this, pos);
+}
+
+void PixelEntity::move_to(sf::Vector2<int> pos) {
+	if (this->frame->grid_pos_safe(pos)) {
+		this->move_to_unsafe(pos);
+	}
 }
 
 void PixelEntity::move_up() {
