@@ -27,6 +27,7 @@ void check_overlap(EntityFrame* frame) {
 }
 
 void set_window_title(sf::RenderWindow &window, EntityFrame &frame) {
+    // Set the title to display how many of each type of creature exists.
     std::ostringstream ss;
     int total = 0;
     int predator_count = 0;
@@ -65,23 +66,23 @@ int main()
     }*/
 
     // single prey:
-    pos = sf::Vector2<int>(0, 0);
-    Prey* p = new SmartPrey(pos, sf::Color::Green);
-    p->add_to_frame(&frame);
+    //pos = sf::Vector2<int>(0, 0);
+    //Prey* p = new SmartPrey(pos, sf::Color::Green);
+    //p->add_to_frame(&frame);
 
      //Initialize a bunch of entities
     int num_prey = 256;
     int num_predator = 256;
-    /*for (int i = 0; i < num_prey; i++) {
+    for (int i = 0; i < num_prey; i++) {
         pos = sf::Vector2<int>(rand() % width, rand() % height);
-        Prey* p = new Prey(pos, sf::Color::Green);
+        Prey* p = new SmartPrey(pos, sf::Color::Green);
         p->add_to_frame(&frame);
     }
     for (int i = 0; i < num_predator; i++) {
         pos = sf::Vector2<int>(rand() % width, rand() % height);
-        Predator* p = new Predator(pos);
+        Predator* p = new SmartPredator(pos);
         p->add_to_frame(&frame);
-    }*/
+    }
 
     /*int num_ent = 2048;
     for (int i = 0; i < num_ent; i++) {
@@ -91,7 +92,6 @@ int main()
     }*/
 
     sf::Image pixel_image;
-
     sf::Texture pixel_texture;
     sf::Sprite pixel_sprite;
 

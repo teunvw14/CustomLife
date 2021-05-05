@@ -5,6 +5,7 @@ class SmartPredator : public Predator {
 	using Predator::Predator;
 public:
 	void do_step();
+	void update_neighbours();
 };
 
 class SmartPrey : public Prey {
@@ -12,4 +13,5 @@ class SmartPrey : public Prey {
 public:
 	void do_step();
 	void breed_smart();
+	int get_baby_breed_time();
 };

@@ -2,15 +2,18 @@
 #include "PredatorPrey.h"
 #include "../EntityFrame.h"
 
-//////////
-// Predator
-//////////
-
+//TODO: change these constants to be class methods or class constants, so that it 
+// can easily be changed for subclasses
 int DEFAULT_TIME_BETWEEN_BREEDS = 512;
 int DEFAULT_STARTING_ENERGY = 2048;
 int REPRODUCTIVE_ENERGY =  DEFAULT_STARTING_ENERGY * 2;
 float CHILDREN_ENERGY_FACTOR = 0.5;
 float EATING_ENERGY_FACTOR = 1;
+
+//////////
+// Predator
+//////////
+
 
 Predator::Predator() : PixelEntity(sf::Color::Red) {
 	this->energy = 0;
@@ -27,8 +30,8 @@ Predator::Predator(sf::Vector2<int> pos, sf::Color color) : Predator(pos, color,
 Predator::Predator(sf::Vector2<int> pos) : Predator(pos, sf::Color::Red) {}
 
 void Predator::do_step() {
-	if (!this->die_if_no_energy()) {
-		// move randomly if possible
+	if (!this->die_if_no_energy()) { // "if the Predator doesn't die"
+		// move in a random direction:
 		int direction = this->frame->get_random_direction();
 		sf::Vector2<int> new_pos = this->pos;
 		PixelEntity* thing_at_new_pos;
@@ -50,17 +53,7 @@ void Predator::do_step() {
 		thing_at_new_pos = this->frame->at(new_pos);
 		if (thing_at_new_pos) {
 			if (thing_at_new_pos->type_id == 3) {
-				this->frame->destroy(thing_at_new_pos);
-				this->energy += (int)(EATING_ENERGY_FACTOR * (float)this->starting_energy);
-				// after eating the prey, if the energy of the predator
-				// is high enough, a new predator will spawn in place
-				// of the prey
-				if (this->energy >= REPRODUCTIVE_ENERGY && this->frame->grid_pos_safe(new_pos)) {
-					this->energy = (int) (this->energy * (1 - CHILDREN_ENERGY_FACTOR));
-					int baby_starting_energy = (int) (CHILDREN_ENERGY_FACTOR * (float)this->starting_energy);
-					Predator* p = new Predator(new_pos, this->color, baby_starting_energy);
-					p->add_to_frame(this->frame);
-				}
+				this->eat(thing_at_new_pos);
 			}
 		}
 		else {
@@ -79,7 +72,17 @@ bool Predator::die_if_no_energy() {
 }
 
 void Predator::eat(PixelEntity* prey) {
+	// after eating the prey, if the energy of the predator
+	// is high enough, a new predator will spawn in place
+	// of the prey
+	if (this->energy >= REPRODUCTIVE_ENERGY) {
+		this->energy = (int)(this->energy * (1 - CHILDREN_ENERGY_FACTOR));
+		int baby_starting_energy = (int)(CHILDREN_ENERGY_FACTOR * (float)this->starting_energy);
+		Predator* p = new Predator(prey->pos, this->color, baby_starting_energy);
+		p->add_to_frame(this->frame);
+	}
 	this->frame->destroy(prey);
+	this->energy += (int)(EATING_ENERGY_FACTOR * (float)this->starting_energy);
 }
 
 //////////

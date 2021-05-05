@@ -3,10 +3,9 @@
 
 class Predator : public PixelEntity {
 	using PixelEntity::PixelEntity; 
-private:
+public:
 	int starting_energy;
 	int energy;
-public:
 	Predator();
 	Predator(sf::Vector2<int> pos);
 	Predator(sf::Vector2<int> pos, sf::Color color);
@@ -17,9 +16,8 @@ public:
 };
 
 class Prey : public PixelEntity {
-private:
-	int breed_time;
 public:
+	int breed_time;
 	int steps_until_next_breeding;
 	Prey();
 	Prey(sf::Vector2<int> pos);
