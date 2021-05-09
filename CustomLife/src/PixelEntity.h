@@ -29,11 +29,4 @@ public:
 
 	// Utility functions
 	void update_neighbours();
-	//float distance_eucl_to_pixel(PixelEntity pixel);
-	//float distance_manh_to_pixel(PixelEntity pixel);
-	
-	//bool pixel_up_free();
-	//bool pixel_right_free();
-	//bool pixel_down_free();
-	//bool pixel_left_free();
 };

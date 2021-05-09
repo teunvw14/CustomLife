@@ -163,7 +163,9 @@
     <ClInclude Include="src\Entities\SmartPredatorPrey.h" />
     <ClInclude Include="src\EntityFrame.h" />
     <ClInclude Include="src\PixelEntity.h" />
+    <ClInclude Include="src\util\DebuggingFunctions.h" />
     <ClInclude Include="src\util\directions.h" />
+    <ClInclude Include="src\util\WindowHandling.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

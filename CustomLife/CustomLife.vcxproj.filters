@@ -65,5 +65,11 @@
     <ClInclude Include="src\Entities\SmartPredatorPrey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\WindowHandling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\DebuggingFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

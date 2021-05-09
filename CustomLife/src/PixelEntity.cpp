@@ -70,5 +70,3 @@ void PixelEntity::update_neighbours() {
 		}
 	}
 }
-
-

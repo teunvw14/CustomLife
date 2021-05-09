@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <sstream>
 #include <stdlib.h>
 #include <SFML/Graphics.hpp>
 #include "EntityFrame.h"
@@ -10,37 +9,9 @@
 #include "Entities/RandomWalkEntity.h"
 #include "Entities/PredatorPrey.h"
 #include "Entities/SmartPredatorPrey.h"
+#include "util/WindowHandling.h"
+#include "util/DebuggingFunctions.h"
 
-
-// Check for overlapping entities
-// Should only be used for debugging, causes extreme slowdown
-void check_overlap(EntityFrame* frame) {
-    for (PixelEntity* ent_first : frame->entities) {
-        size_t count = 0;
-        for (PixelEntity* ent_second : frame->entities) {
-            if (count > 0 && ent_first->pos == ent_second->pos) {
-                count++;
-                std::cout << "Something is going terribly wrong!!" << std::endl;
-            }
-        }
-    }
-}
-
-void set_window_title(sf::RenderWindow &window, EntityFrame &frame) {
-    // Set the title to display how many of each type of creature exists.
-    std::ostringstream ss;
-    int total = 0;
-    int predator_count = 0;
-    int prey_count = 0;
-    for (auto ent : frame.entities) {
-        predator_count += (ent->type_id == 2);
-        prey_count += (ent->type_id == 3);
-        total++;
-    }
-    ss << "Total creatures: " << total << " predators: " << predator_count << " prey: " << prey_count;
-    std::string title = ss.str();
-    window.setTitle(title);
-}
 
 int main()
 {
@@ -84,12 +55,6 @@ int main()
         p->add_to_frame(&frame);
     }
 
-    /*int num_ent = 2048;
-    for (int i = 0; i < num_ent; i++) {
-        pos = sf::Vector2<int>(rand() % width, rand() % height);
-        AvoidantEntity* p = new AvoidantEntity(pos, sf::Color::White);
-        p->add_to_frame(&frame);
-    }*/
 
     sf::Image pixel_image;
     sf::Texture pixel_texture;
