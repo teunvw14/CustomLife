@@ -4,9 +4,9 @@
 class Predator : public PixelEntity {
 	using PixelEntity::PixelEntity; 
 public:
-	int starting_energy;
+	int starting_energy = 2048;
 	int energy;
-	Predator();
+	Predator() = delete;
 	Predator(sf::Vector2<int> pos);
 	Predator(sf::Vector2<int> pos, sf::Color color);
 	Predator(sf::Vector2<int> pos, sf::Color color, int starting_energy);
@@ -17,9 +17,9 @@ public:
 
 class Prey : public PixelEntity {
 public:
-	int breed_time;
+	int breed_time = 512;
 	int steps_until_next_breeding;
-	Prey();
+	Prey() = delete;
 	Prey(sf::Vector2<int> pos);
 	Prey(sf::Vector2<int> pos, sf::Color color);
 	Prey(sf::Vector2<int> pos, sf::Color color, int breed_time);

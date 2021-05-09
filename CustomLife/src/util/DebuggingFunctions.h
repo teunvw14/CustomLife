@@ -7,13 +7,12 @@
 // Check for overlapping entities
 // Should only be used for debugging, causes extreme slowdown
 void check_overlap(EntityFrame* frame) {
-    for (PixelEntity* ent_first : frame->entities) {
-        size_t count = 0;
-        for (PixelEntity* ent_second : frame->entities) {
-            if (count > 0 && ent_first->pos == ent_second->pos) {
-                count++;
-                std::cout << "Something is going terribly wrong!!" << std::endl;
-            }
+    for (PixelEntity* ent : frame->entities) {
+        ent->update_neighbours();
+        int neighbour_count = ent->neighbours.size();
+        int max_neighbours = (2 * ent->neighbour_radius + 1) * (2 * ent->neighbour_radius + 1);
+        if (neighbour_count > max_neighbours) {
+            std::cout << "Something is wrong here: neighbour_count = " << neighbour_count << " max_neighbours = " << max_neighbours << "\n";
         }
     }
 }

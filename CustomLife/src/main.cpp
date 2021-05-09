@@ -42,8 +42,8 @@ int main()
     //p->add_to_frame(&frame);
 
      //Initialize a bunch of entities
-    int num_prey = 256;
-    int num_predator = 256;
+    int num_prey = 5 * (int) sqrt((float)width);
+    int num_predator = num_prey;
     for (int i = 0; i < num_prey; i++) {
         pos = sf::Vector2<int>(rand() % width, rand() % height);
         Prey* p = new SmartPrey(pos, sf::Color::Green);

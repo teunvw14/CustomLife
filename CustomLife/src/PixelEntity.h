@@ -6,7 +6,7 @@ class PixelEntity
 {
 public:
 	EntityFrame* frame; // The frame within which a pixel exists
-	unsigned short neighbour_radius; // Radius within which other pixels are considered neighbours
+	unsigned int neighbour_radius; // Radius within which other pixels are considered neighbours
 	std::vector<PixelEntity*> neighbours; // A vector containing the neighbours of the pixel
 	sf::Vector2<int> pos; // Position of the pixel within its frame
 	sf::Color color;

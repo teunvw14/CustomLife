@@ -15,18 +15,15 @@ float EATING_ENERGY_FACTOR = 1;
 //////////
 
 
-Predator::Predator() : PixelEntity(sf::Color::Red) {
-	this->energy = 0;
-	this->starting_energy = 0;
-}
-
-Predator::Predator(sf::Vector2<int> pos, sf::Color color, int starting_energy) : PixelEntity(pos, color) {
-	this->starting_energy = starting_energy;
-	this->energy = this->starting_energy;
+Predator::Predator(sf::Vector2<int> pos, sf::Color color) : PixelEntity(pos, color) {
 	this->type_id = 2;
+	this->energy = this->starting_energy;
 }
 
-Predator::Predator(sf::Vector2<int> pos, sf::Color color) : Predator(pos, color, DEFAULT_STARTING_ENERGY) {}
+Predator::Predator(sf::Vector2<int> pos, sf::Color color, int starting_energy) : Predator(pos, color) {
+	this->starting_energy = starting_energy;
+}
+
 Predator::Predator(sf::Vector2<int> pos) : Predator(pos, sf::Color::Red) {}
 
 void Predator::do_step() {
@@ -89,20 +86,17 @@ void Predator::eat(PixelEntity* prey) {
 // Prey
 //////////
 
-Prey::Prey() : PixelEntity(sf::Color::Green) {
-	this->breed_time = 0;
-	this->steps_until_next_breeding = 0;
+Prey::Prey(sf::Vector2<int> pos) : Prey(pos, sf::Color::Green) {}
+
+Prey::Prey(sf::Vector2<int> pos, sf::Color color) : PixelEntity(pos, color) {
+	this->type_id = 3;
+	this->steps_until_next_breeding = this->breed_time;
 }
 
-Prey::Prey(sf::Vector2<int> pos, sf::Color color, int breed_time) : PixelEntity(pos, color) {
+Prey::Prey(sf::Vector2<int> pos, sf::Color color, int breed_time) : Prey(pos, color) {
 	this->breed_time = breed_time;
 	this->steps_until_next_breeding = this->breed_time;
-	this->type_id = 3;
 }
-
-Prey::Prey(sf::Vector2<int> pos) : Prey(pos, sf::Color::Green) {}
-Prey::Prey(sf::Vector2<int> pos, sf::Color color) : Prey(pos, color, DEFAULT_TIME_BETWEEN_BREEDS) {}
-
 
 void Prey::do_step() {
 	int direction = this->frame->get_random_direction();

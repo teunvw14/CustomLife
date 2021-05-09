@@ -59,7 +59,7 @@ void PixelEntity::move_down() {
 
 void PixelEntity::update_neighbours() {
 	this->neighbours =  std::vector<PixelEntity*>();
-	unsigned short rad = this->neighbour_radius;
+	unsigned int rad = this->neighbour_radius;
 	for (int y = this->pos.y - rad; y <= this->pos.y + rad; y++) {
 		for (int x = this->pos.x - rad; x <= this->pos.x + rad; x++) {
 			sf::Vector2<int> grid_position(x, y);
